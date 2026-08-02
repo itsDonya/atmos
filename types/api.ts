@@ -92,6 +92,21 @@ export interface DailyChartPoint {
   wind_speed_max: number;
 }
 
+/**
+ * US EPA Air Quality Index reading, normalized from Open-Meteo's
+ * Air Quality API. `aqi` uses the US AQI scale (0–500) so the client can
+ * classify it as Good / Moderate / Unhealthy, etc.
+ */
+export interface AirQuality {
+  aqi: number;
+  pm2_5: number; // µg/m³
+  pm10: number; // µg/m³
+  ozone: number; // µg/m³
+  carbon_monoxide: number; // µg/m³
+  nitrogen_dioxide: number; // µg/m³
+  sulphur_dioxide: number; // µg/m³
+}
+
 export interface WeatherApiResponse {
   location: Location;
   current: CurrentConditions;
@@ -99,6 +114,7 @@ export interface WeatherApiResponse {
   daily: DailyDataPoint[];
   hourly_chart: HourlyChartPoint[];
   daily_chart: DailyChartPoint[];
+  air_quality: AirQuality;
   fetched_at: string;
 }
 

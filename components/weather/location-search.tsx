@@ -24,6 +24,7 @@ export function LocationSearch({ className }: { className?: string }) {
   const [error, setError] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const trimmed = query.trim();
@@ -40,6 +41,17 @@ export function LocationSearch({ className }: { className?: string }) {
     }
     document.addEventListener("mousedown", onDocMouseDown);
     return () => document.removeEventListener("mousedown", onDocMouseDown);
+  }, []);
+
+  // The dashboard broadcasts this when geolocation is denied so the user can
+  // immediately start typing a city (auto-focus, zero extra clicks).
+  useEffect(() => {
+    function onFocusSearch() {
+      inputRef.current?.focus();
+      setOpen(true);
+    }
+    window.addEventListener("atmos:focus-search", onFocusSearch);
+    return () => window.removeEventListener("atmos:focus-search", onFocusSearch);
   }, []);
 
   // Debounced search against /api/search. All state writes happen in the
@@ -104,6 +116,7 @@ export function LocationSearch({ className }: { className?: string }) {
       <div className="relative flex h-11 items-center">
         <Search className="pointer-events-none absolute left-4 h-4 w-4 text-primary" />
         <input
+          ref={inputRef}
           value={displayValue}
           onChange={(e) => {
             const value = e.target.value;

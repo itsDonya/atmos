@@ -72,6 +72,31 @@ export interface OpenMeteoResponse {
   daily: OpenMeteoDailyData;
 }
 
+// ─── Air Quality API types (Open-Meteo /v1/air-quality) ─────────────────────
+
+export interface OpenMeteoAirQualityCurrent {
+  time: string;
+  interval: number;
+  us_aqi: number; // US EPA AQI (0–500)
+  pm2_5: number; // µg/m³
+  pm10: number; // µg/m³
+  ozone: number; // µg/m³
+  carbon_monoxide: number; // µg/m³
+  nitrogen_dioxide: number; // µg/m³
+  sulphur_dioxide: number; // µg/m³
+}
+
+export interface OpenMeteoAirQualityResponse {
+  latitude: number;
+  longitude: number;
+  generationtime_ms: number;
+  timezone: string;
+  timezone_abbreviation: string;
+  elevation: number;
+  current_units: Record<string, string>;
+  current: OpenMeteoAirQualityCurrent;
+}
+
 // Geocoding API types
 export interface GeocodingResult {
   id: number;

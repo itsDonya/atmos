@@ -1,5 +1,3 @@
-"use client";
-
 import { Droplets, Gauge, Sun, Wind } from "lucide-react";
 
 import { WeatherIcon } from "@/components/weather/weather-icon";
@@ -12,17 +10,20 @@ import {
   formatWindSpeed,
   getUVInfo,
 } from "@/lib/weather-format";
+import { cn } from "@/lib/utils";
 
 interface CurrentWeatherProps {
   current: CurrentConditions;
   name: string;
   timezone: string;
+  className?: string;
 }
 
 export function CurrentWeather({
   current,
   name,
   timezone,
+  className,
 }: CurrentWeatherProps) {
   const uv = getUVInfo(current.uv_index);
 
@@ -52,46 +53,60 @@ export function CurrentWeather({
   ];
 
   return (
-    <section className="glass-panel flex flex-col gap-8 rounded-[var(--radius-lg)] p-6 md:p-8 lg:flex-row lg:items-center lg:justify-between">
+    <section
+      className={cn(
+        "glass-panel flex flex-col gap-6 rounded-[var(--radius-lg)] p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 xl:p-8",
+        className
+      )}
+    >
       {/* Left: headline */}
-      <div className="flex items-center gap-6">
-        <div className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-primary/10">
-          <WeatherIcon
-            condition={current.condition}
-            weatherCode={current.weather_code}
-            isDay={current.is_day}
-            className="h-12 w-12 text-primary"
-            strokeWidth={1.5}
-          />
+      <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-4">
+          <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-primary/10 sm:h-20 sm:w-20">
+            <WeatherIcon
+              condition={current.condition}
+              weatherCode={current.weather_code}
+              isDay={current.is_day}
+              className="h-10 w-10 text-primary sm:h-12 sm:w-12"
+              strokeWidth={1.5}
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium uppercase tracking-wide text-primary sm:text-sm">
+              {current.condition_label}
+            </p>
+            <h2 className="mt-0.5 truncate text-xl font-bold tracking-tight sm:text-2xl">
+              {name}
+            </h2>
+            <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">
+              {timezone}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-medium uppercase tracking-wide text-primary">
-            {current.condition_label}
+
+        {/* Hero temperature — isolated on its own wrapping line for mobile */}
+        <div className="mt-4 flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-2 sm:mt-6">
+          <p className="text-6xl font-bold leading-none tracking-tighter md:text-7xl xl:text-8xl">
+            {formatTemperature(current.temperature, "C")}
           </p>
-          <h2 className="mt-0.5 text-2xl font-bold tracking-tight">{name}</h2>
-          <p className="text-sm text-muted-foreground">
-            Feels like{" "}
-            {formatTemperature(current.apparent_temperature, "C", 1)}° ·{" "}
-            {timezone}
+          <p className="pb-1 text-sm text-muted-foreground">
+            Feels like {formatTemperature(current.apparent_temperature, "C", 1)}°
           </p>
         </div>
-        <p className="text-6xl font-bold leading-none tracking-tighter sm:text-7xl">
-          {formatTemperature(current.temperature, "C")}
-        </p>
       </div>
 
       {/* Right: stat tiles */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 lg:w-72 xl:w-80">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-xl border border-border bg-background/40 p-4"
+            className="rounded-xl border border-border bg-background/40 p-3.5 sm:p-4"
           >
             <div className="flex items-center gap-2 text-muted-foreground">
               {stat.icon}
               <span className="text-xs">{stat.label}</span>
             </div>
-            <p className="mt-1.5 text-xl font-semibold tracking-tight">
+            <p className="mt-1.5 truncate text-base font-semibold tracking-tight sm:text-xl">
               {stat.value}
             </p>
           </div>

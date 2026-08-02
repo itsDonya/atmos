@@ -4,6 +4,7 @@ import type {
   OpenMeteoResponse,
   OpenMeteoHourlyData,
   OpenMeteoDailyData,
+  OpenMeteoAirQualityResponse,
 } from "@/types/weather";
 import type {
   WeatherApiResponse,
@@ -13,6 +14,7 @@ import type {
   DailyDataPoint,
   HourlyChartPoint,
   DailyChartPoint,
+  AirQuality,
 } from "@/types/api";
 import {
   getWeatherCodeInfo,
@@ -26,6 +28,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 900;
 
 const OPEN_METEO_BASE = "https://api.open-meteo.com/v1/forecast";
+const AIR_QUALITY_BASE = "https://air-quality-api.open-meteo.com/v1/air-quality";
 
 function validateParams(params: {
   lat?: string;
@@ -72,6 +75,31 @@ function buildOpenMeteoUrl(latitude: number, longitude: number, timezone: string
   });
 
   return `${OPEN_METEO_BASE}?${params.toString()}`;
+}
+
+function buildAirQualityUrl(latitude: number, longitude: number) {
+  const params = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+    current:
+      "us_aqi,pm2_5,pm10,ozone,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide",
+    timezone: "auto",
+  });
+
+  return `${AIR_QUALITY_BASE}?${params.toString()}`;
+}
+
+function buildAirQuality(json: OpenMeteoAirQualityResponse): AirQuality {
+  const c = json.current;
+  return {
+    aqi: c.us_aqi,
+    pm2_5: c.pm2_5,
+    pm10: c.pm10,
+    ozone: c.ozone,
+    carbon_monoxide: c.carbon_monoxide,
+    nitrogen_dioxide: c.nitrogen_dioxide,
+    sulphur_dioxide: c.sulphur_dioxide,
+  };
 }
 
 function buildLocation(json: OpenMeteoResponse, timezone: string): Location {
@@ -230,10 +258,18 @@ export async function GET(request: Request) {
     };
 
     const fetchUrl = buildOpenMeteoUrl(latitude, longitude, timezone);
-    const response = await fetch(fetchUrl, {
-      headers: { Accept: "application/json" },
-      next: { revalidate: 900 },
-    });
+    const airQualityUrl = buildAirQualityUrl(latitude, longitude);
+
+    const [response, airQualityResponse] = await Promise.all([
+      fetch(fetchUrl, {
+        headers: { Accept: "application/json" },
+        next: { revalidate: 900 },
+      }),
+      fetch(airQualityUrl, {
+        headers: { Accept: "application/json" },
+        next: { revalidate: 900 },
+      }),
+    ]);
 
     if (!response.ok) {
       return NextResponse.json(
@@ -244,6 +280,26 @@ export async function GET(request: Request) {
 
     const json = (await response.json()) as OpenMeteoResponse;
     const utcOffsetSeconds = json.utc_offset_seconds ?? 0;
+
+    // Air quality is a nice-to-have; if it fails, surface a neutral reading
+    // rather than failing the whole weather request.
+    let airQuality: AirQuality = {
+      aqi: 0,
+      pm2_5: 0,
+      pm10: 0,
+      ozone: 0,
+      carbon_monoxide: 0,
+      nitrogen_dioxide: 0,
+      sulphur_dioxide: 0,
+    };
+    if (airQualityResponse.ok) {
+      try {
+        const aqJson = (await airQualityResponse.json()) as OpenMeteoAirQualityResponse;
+        airQuality = buildAirQuality(aqJson);
+      } catch {
+        /* keep neutral airQuality */
+      }
+    }
 
     // When timezone is "auto", Open-Meteo resolves the correct IANA zone.
     const resolvedTimezone = timezone === "auto" ? json.timezone : timezone;
@@ -268,6 +324,7 @@ export async function GET(request: Request) {
       daily,
       hourly_chart: hourlyChart,
       daily_chart: dailyChart,
+      air_quality: airQuality,
       fetched_at: new Date().toISOString(),
     };
 

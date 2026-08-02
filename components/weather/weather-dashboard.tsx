@@ -12,6 +12,8 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { CurrentWeather } from "@/components/weather/current-weather";
 import { HourlyChart } from "@/components/weather/hourly-chart";
 import { DailyForecast } from "@/components/weather/daily-forecast";
+import { AqiWidget } from "@/components/weather/aqi-widget";
+import { AstroWidget } from "@/components/weather/astro-widget";
 import { WeatherSkeleton } from "@/components/weather/skeletons";
 
 export function WeatherDashboard() {
@@ -58,6 +60,17 @@ export function WeatherDashboard() {
       cancelled = true;
     };
   }, [activeLocation]);
+
+  // Auto-focus the header search when geolocation is denied / unavailable, so
+  // the user can start typing a city with zero extra clicks.
+  useEffect(() => {
+    if (!activeLocation && (geo.error || !geo.supported)) {
+      const t = setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("atmos:focus-search"));
+      }, 60);
+      return () => clearTimeout(t);
+    }
+  }, [activeLocation, geo.error, geo.supported]);
 
   // --- No location yet -------------------------------------------------------
   if (!activeLocation) {
@@ -125,25 +138,41 @@ export function WeatherDashboard() {
   }
 
   // --- Ready -----------------------------------------------------------------
+  const today = weather.daily[0];
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-6">
+      {/* Hero — current conditions (spans the left of the grid) */}
       <CurrentWeather
+        className="md:col-span-2 xl:col-span-4"
         current={weather.current}
         name={activeLocation.display_name}
         timezone={weather.location.timezone}
       />
-      <div className="grid gap-5 lg:grid-cols-5">
-        <HourlyChart
-          className="lg:col-span-3"
-          data={weather.hourly_chart}
-          timezone={weather.location.timezone}
-        />
-        <DailyForecast
-          className="lg:col-span-2"
-          data={weather.daily}
+
+      {/* Bento right rail — AQI + Astro */}
+      <div className="grid gap-5 md:col-span-2 md:grid-cols-2 xl:col-span-2 xl:grid-cols-1">
+        <AqiWidget airQuality={weather.air_quality} />
+        <AstroWidget
+          sunriseLabel={today?.sunrise_label ?? "—"}
+          sunsetLabel={today?.sunset_label ?? "—"}
           timezone={weather.location.timezone}
         />
       </div>
+
+      {/* Hourly chart (wide) */}
+      <HourlyChart
+        className="md:col-span-2 xl:col-span-4"
+        data={weather.hourly_chart}
+        timezone={weather.location.timezone}
+      />
+
+      {/* 7-day forecast (right rail) */}
+      <DailyForecast
+        className="md:col-span-2 xl:col-span-2"
+        data={weather.daily}
+        timezone={weather.location.timezone}
+      />
     </div>
   );
 }

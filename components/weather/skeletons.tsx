@@ -42,25 +42,27 @@ export function CurrentWeatherSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "glass-panel flex flex-col gap-8 rounded-[var(--radius-lg)] p-6 md:p-8 lg:flex-row lg:items-center lg:justify-between",
+        "glass-panel flex flex-col gap-6 rounded-[var(--radius-lg)] p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between xl:p-8",
         className
       )}
     >
       {/* Left: headline */}
-      <div className="flex items-center gap-6">
-        <Skeleton className="grid h-20 w-20 place-items-center rounded-2xl bg-primary/10">
-          <CloudSun className="h-10 w-10 text-primary/30" />
-        </Skeleton>
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-28 rounded-full bg-primary/10" />
-          <Skeleton className="h-7 w-40 rounded-lg" />
-          <Skeleton className="h-3 w-24 rounded-full" />
+      <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-4">
+          <Skeleton className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-primary/10 sm:h-20 sm:w-20">
+            <CloudSun className="h-10 w-10 text-primary/30" />
+          </Skeleton>
+          <div className="min-w-0 flex-1 space-y-2">
+            <Skeleton className="h-3 w-24 rounded-full bg-primary/10" />
+            <Skeleton className="h-6 w-40 rounded-lg" />
+            <Skeleton className="h-3 w-28 rounded-full" />
+          </div>
         </div>
-        <Skeleton className="h-20 w-28 rounded-2xl text-5xl" />
+        <Skeleton className="mt-4 h-16 w-44 rounded-2xl sm:mt-6" />
       </div>
 
       {/* Right: stat tiles */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 lg:w-72 xl:w-80">
         <StatTileSkeleton />
         <StatTileSkeleton />
         <StatTileSkeleton />
@@ -134,15 +136,72 @@ export function DailyForecastSkeleton({ className }: { className?: string }) {
   );
 }
 
-/** Full dashboard skeleton — matches the weather-dashboard grid exactly. */
+export function AqiWidgetSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "glass-panel h-full rounded-[var(--radius-lg)] p-5",
+        className
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-4 w-4 rounded-full bg-primary/20" />
+        <Skeleton className="h-4 w-28 rounded-full" />
+      </div>
+      <div className="mt-4 flex items-center gap-4">
+        <Skeleton className="h-16 w-16 shrink-0 rounded-full" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <Skeleton className="h-4 w-24 rounded-full" />
+          <Skeleton className="h-3 w-full rounded-full" />
+        </div>
+      </div>
+      <Skeleton className="mt-4 h-2 w-full rounded-full" />
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <Skeleton className="h-14 rounded-lg" />
+        <Skeleton className="h-14 rounded-lg" />
+        <Skeleton className="h-14 rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
+export function AstroWidgetSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "glass-panel h-full rounded-[var(--radius-lg)] p-5",
+        className
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-4 w-4 rounded-full bg-primary/20" />
+        <Skeleton className="h-4 w-28 rounded-full" />
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <Skeleton className="h-24 rounded-xl" />
+        <Skeleton className="h-24 rounded-xl" />
+      </div>
+      <Skeleton className="mt-4 h-1.5 w-full rounded-full" />
+    </div>
+  );
+}
+
+/** Full dashboard skeleton — matches the weather-dashboard Bento grid exactly. */
 export function WeatherSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("flex flex-col gap-5", className)}>
-      <CurrentWeatherSkeleton />
-      <div className="grid gap-5 lg:grid-cols-5">
-        <HourlyChartSkeleton className="lg:col-span-3" />
-        <DailyForecastSkeleton className="lg:col-span-2" />
+    <div
+      className={cn(
+        "grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-6",
+        className
+      )}
+    >
+      <CurrentWeatherSkeleton className="md:col-span-2 xl:col-span-4" />
+      <div className="grid gap-5 md:col-span-2 md:grid-cols-2 xl:col-span-2 xl:grid-cols-1">
+        <AqiWidgetSkeleton />
+        <AstroWidgetSkeleton />
       </div>
+      <HourlyChartSkeleton className="md:col-span-2 xl:col-span-4" />
+      <DailyForecastSkeleton className="md:col-span-2 xl:col-span-2" />
     </div>
   );
 }
