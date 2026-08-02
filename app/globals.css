@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+/*
+  Atmos — Premium dark-mode-first design system.
+  Custom palette: deep slate backgrounds, crisp cyan/violet accents,
+  custom border radii. Deliberately NOT a default shadcn dashboard.
+*/
+
+:root {
+  --background: #070b14;
+  --foreground: #e8eef7;
+
+  --card: #0e1524;
+  --card-foreground: #e8eef7;
+
+  --popover: #101827;
+  --popover-foreground: #e8eef7;
+
+  --primary: #22d3ee;
+  --primary-foreground: #062230;
+
+  --secondary: #1c2740;
+  --secondary-foreground: #cbd8ec;
+
+  --muted: #151d2e;
+  --muted-foreground: #8fa0bd;
+
+  --accent: #7c6cff;
+  --accent-foreground: #eceaff;
+
+  --destructive: #f43f5e;
+  --destructive-foreground: #ffe9ed;
+
+  --border: #1d2941;
+  --input: #22304d;
+  --ring: #22d3ee;
+
+  --radius: 0.9rem;
+
+  --chart-1: #22d3ee;
+  --chart-2: #7c6cff;
+  --chart-3: #f59e0b;
+  --chart-4: #34d399;
+  --chart-5: #f43f5e;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background:
+      radial-gradient(
+        1200px 600px at 15% -10%,
+        rgba(34, 211, 238, 0.08),
+        transparent 60%
+      ),
+      radial-gradient(
+        1000px 500px at 95% 5%,
+        rgba(124, 108, 255, 0.08),
+        transparent 55%
+      ),
+      var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1d2941;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2a3a5c;
+    background-clip: padding-box;
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.25);
+  }
+
+  /* Glassmorphism helper utility */
+  .glass-panel {
+    background: linear-gradient(
+      165deg,
+      rgba(20, 30, 52, 0.72),
+      rgba(10, 16, 30, 0.6)
+    );
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(29, 41, 65, 0.7);
+  }
+
+  /* Text gradient accent */
+  .text-gradient {
+    background: linear-gradient(135deg, #22d3ee, #7c6cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Recharts theming overrides */
+  .recharts-cartesian-grid line {
+    stroke: rgba(29, 41, 65, 0.5);
+  }
+  .recharts-default-tooltip {
+    background: #101827 !important;
+    border: 1px solid #22304d !important;
+    border-radius: 12px !important;
+    color: #e8eef7 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
