@@ -2,8 +2,9 @@
 
 /*
   Atmos — Premium dark-mode-first design system.
-  Custom palette: deep slate backgrounds, crisp cyan/violet accents,
-  custom border radii. Deliberately NOT a default shadcn dashboard.
+  Custom palette: deep slate backgrounds, premium Teal (HSL 173 80% 40%)
+  accents with a soft violet secondary. Custom border radii.
+  Deliberately NOT a default shadcn dashboard.
 */
 
 :root {
@@ -16,8 +17,8 @@
   --popover: #101827;
   --popover-foreground: #e8eef7;
 
-  --primary: #22d3ee;
-  --primary-foreground: #062230;
+  --primary: hsl(173 80% 40%);
+  --primary-foreground: hsl(176 78% 10%);
 
   --secondary: #1c2740;
   --secondary-foreground: #cbd8ec;
@@ -33,14 +34,14 @@
 
   --border: #1d2941;
   --input: #22304d;
-  --ring: #22d3ee;
+  --ring: hsl(173 85% 58%);
 
   --radius: 0.9rem;
 
-  --chart-1: #22d3ee;
+  --chart-1: hsl(173 80% 40%);
   --chart-2: #7c6cff;
   --chart-3: #f59e0b;
-  --chart-4: #34d399;
+  --chart-4: hsl(173 40% 55%);
   --chart-5: #f43f5e;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -89,7 +90,7 @@
     background:
       radial-gradient(
         1200px 600px at 15% -10%,
-        rgba(34, 211, 238, 0.08),
+        rgba(20, 184, 166, 0.09),
         transparent 60%
       ),
       radial-gradient(
@@ -124,7 +125,7 @@
   }
 
   ::selection {
-    background: rgba(34, 211, 238, 0.25);
+    background: rgba(20, 184, 166, 0.28);
   }
 
   /* Glassmorphism helper utility */
@@ -140,7 +141,7 @@
 
   /* Text gradient accent */
   .text-gradient {
-    background: linear-gradient(135deg, #22d3ee, #7c6cff);
+    background: linear-gradient(135deg, hsl(173 80% 55%), #7c6cff);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -148,11 +149,19 @@
 
   /* Recharts theming overrides */
   .recharts-cartesian-grid line {
-    stroke: rgba(29, 41, 65, 0.5);
+    stroke: rgba(29, 41, 65, 0.55);
+  }
+  .recharts-cartesian-axis-tick-value {
+    fill: var(--muted-foreground);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .recharts-tooltip-cursor {
+    fill: rgba(20, 184, 166, 0.08);
   }
   .recharts-default-tooltip {
     background: #101827 !important;
-    border: 1px solid #22304d !important;
+    border: 1px solid hsl(173 40% 30%) !important;
     border-radius: 12px !important;
     color: #e8eef7 !important;
   }

@@ -1,28 +1,45 @@
-"use client";
+import Link from "next/link";
 
-import { CloudSun } from "lucide-react";
+import { AtmosLogo } from "@/components/ui/atmos-logo";
+import { LocationSearch } from "@/components/weather/location-search";
+import { WeatherDashboard } from "@/components/weather/weather-dashboard";
 
-/**
- * Placeholder landing for Prompt 1 & 2 (Foundation + BFF + State).
- * The full UI & data visualization experience ships in Prompt 2.
- */
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      <div className="glass-panel flex flex-col items-center gap-4 rounded-2xl px-10 py-12 shadow-2xl">
-        <CloudSun className="h-16 w-16 text-primary" strokeWidth={1.5} />
-        <h1 className="text-4xl font-bold tracking-tight">
-          <span className="text-gradient">Atmos</span>
-        </h1>
-        <p className="max-w-md text-muted-foreground">
-          The premium real-time weather engine. Foundation, feature-complete BFF,
-          and state layer are live — the full dashboard UI arrives in the next
-          build phase.
-        </p>
-        <p className="text-sm text-muted-foreground/70">
-          ✓ Zustand store · ✓ BFF API routes · ✓ Geolocation hook · ✓ Premium theming
-        </p>
-      </div>
-    </main>
+    <div className="relative flex min-h-screen flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
+          <Link
+            href="/"
+            className="group flex items-center gap-2.5"
+            aria-label="Atmos home"
+          >
+            <AtmosLogo className="h-9 w-9 transition-transform duration-300 group-hover:scale-105" />
+            <span className="text-xl font-bold tracking-tight">
+              Atmos
+            </span>
+          </Link>
+          <LocationSearch className="ml-auto max-w-lg" />
+        </div>
+      </header>
+
+      {/* Dashboard */}
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">
+        <WeatherDashboard />
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border/60">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row sm:px-6">
+          <p>
+            © {new Date().getFullYear()}{" "}
+            <span className="text-gradient font-semibold">Atmos</span> — Real-time weather.
+          </p>
+          <p>Powered by Open-Meteo · Data refreshed every 15 min</p>
+        </div>
+      </footer>
+    </div>
   );
 }
+
